@@ -1,28 +1,31 @@
 using System;
+using Message;
 using Unity.Mathematics;
-using UnityEngine;
 using Random = System.Random;
 
 public class AttackSkill : Skill 
 {
     public float AttackFactor { get; private set; }
-    public SkillConfig config;
-    public AttackSkill(String name)
+    public AttackSkill(SkillConfig config) : base(config)
     {
-        config = Resources.Load<SkillConfig>(name);
-        LeftCd = Cd = config.Cd;
-        AttackFactor = config.AttackFactor;
+        AttackFactor = Config.AttackFactor;
     }
-    
-    public override SkillResult OnCast(CharacterInfo casterInfo, CharacterInfo targetInfo, Random rand)
+
+    public override bool OnCastBegin(CharacterInfo caster)
     {
-        bool isMiss = rand.Next(100) < targetInfo.Dodge;
-        bool isCritical = rand.Next(100) < casterInfo.Critical;
-        float atk = casterInfo.Attack * AttackFactor / 100;
-        float def = targetInfo.Denfence;
+        Messenger.Broadcast(MsgConst.ACTOR_ATTACK, caster.ID);
+        return false;
+    }
+
+    public override SkillResult OnCast(CharacterInfo caster, CharacterInfo target, Random rand)
+    {
+        bool isMiss = rand.Next(100) < target.Dodge;
+        bool isCritical = rand.Next(100) < caster.Critical;
+        float atk = caster.Attack * AttackFactor / 100;
+        float def = target.Denfence;
         int damage =  (int)math.ceil(atk * atk / (atk + def));
         if (isCritical)
-            damage = damage * casterInfo.CriticalDamage / 100;
+            damage = (int)math.ceil(damage * caster.CriticalDamage / 100.0f);
         return new SkillResult(damage, isMiss, isCritical, null);
     }
 }

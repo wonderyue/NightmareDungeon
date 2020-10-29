@@ -1,45 +1,51 @@
-using Unity.Mathematics;
-using UnityEngine;
+using System;
+using System.Collections.Generic;
 
-public class CharacterInfo : MonoBehaviour
+[Serializable]
+public class CharacterInfo
 {
-    [field: SerializeField] public int RawAttack { get; private set; }
-    [field: SerializeField] public int RawDenfence { get; private set; }
-    [field: SerializeField] public int RawDodge { get; private set; }
-    [field: SerializeField] public int RawCritical { get; private set; }
-    [field: SerializeField] public int RawCriticalDamage { get; private set; }
-    [field: SerializeField] public int RawHp { get; private set; }
-    [field: SerializeField] public int RawSpeed { get; private set; }
-    [field: SerializeField] public int Attack { get; private set; }
-    [field: SerializeField] public int Denfence { get; private set; }
-    [field: SerializeField] public int Dodge { get; private set; }
-    [field: SerializeField] public int Critical { get; private set; }
-    [field: SerializeField] public int CriticalDamage { get; private set; }
-    [field: SerializeField] public int Hp { get; private set; }
-    [field: SerializeField] public int Exp { get; private set; }
-    [field: SerializeField] public int Level { get; private set; }
-    [field: SerializeField] public int Speed { get; private set; }
-    
-    public CharacterInfo(int attack, int denfence, int dodge, int critical, int criticalDamage, int hp, int exp, int level, int speed)
+    public int ID;
+    public string Name;
+    public int RawAttack;
+    public int RawDenfence;
+    public int RawDodge;
+    public int RawCritical;
+    public int RawCriticalDamage;
+    public int RawHp;
+    public int RawSpeed;
+    public int Attack;
+    public int Denfence;
+    public int Dodge;
+    public int Critical;
+    public int CriticalDamage;
+    public int Hp;
+    public int Speed;
+    public int Exp;
+    public int Level;
+    public List<Buff> Buffs;
+    public List<Skill> ActiveSkills;
+    public CharacterInfo(CharacterConfig characterConfig)
     {
-        RawAttack = Attack = attack;
-        RawDenfence = Denfence = denfence;
-        RawDodge = Dodge = dodge;
-        RawCritical = Critical = critical;
-        RawCriticalDamage = CriticalDamage = criticalDamage;
-        RawHp = Hp = hp;
-        RawSpeed = Speed = speed;
-        Exp = exp;
-        Level = level;
-    }
-
-    public void AddHp(int value)
-    {
-        Hp = math.clamp(Hp + value, 0, RawHp);
-        if (Hp == 0)
+        ID = characterConfig.ID;
+        Name = characterConfig.Name;
+        RawAttack = Attack = characterConfig.Attack;
+        RawDenfence = Denfence = characterConfig.Denfence;
+        RawDodge = Dodge = characterConfig.Dodge;
+        RawCritical = Critical = characterConfig.Critical;
+        RawCriticalDamage = CriticalDamage = characterConfig.CriticalDamage;
+        RawHp = Hp = characterConfig.Hp;
+        RawSpeed = Speed = characterConfig.Speed;
+        Exp = characterConfig.Exp;
+        Level = 1;
+        ActiveSkills = new List<Skill>();
+        foreach (var skillConfig in characterConfig.skills)
         {
-            Debug.Log("die");
+            ActiveSkills.Add(SkillFactory.CreateSkill(skillConfig));
         }
-        Debug.Log(Hp);
+        Buffs = new List<Buff>();
+        foreach (var buffConfig in characterConfig.buffs)
+        {
+            Buffs.Add(BuffFactory.CreateBuff(buffConfig));
+        }
     }
 }

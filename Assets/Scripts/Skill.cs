@@ -1,14 +1,20 @@
 using System;
+using UnityEngine;
 using Random = System.Random;
 
+[System.Serializable]
 public abstract class Skill
 {
+    public string SkillName { get; protected set; }
     public int Cd { get; protected set; }
     public int LeftCd { get; protected set; }
-
-    public Skill()
+    public SkillConfig Config { get; protected set; }
+    protected const string ConfigPath = "Configs/Skills/";
+    public Skill(SkillConfig config)
     {
-        Cd = 0;
+        Config = config;
+        SkillName = Config.SkillName;
+        Cd = Config.Cd;
         LeftCd = Cd;
     }
     
@@ -17,5 +23,6 @@ public abstract class Skill
         LeftCd = Math.Max(0, LeftCd - 1);
     }
 
-    public abstract SkillResult OnCast(CharacterInfo casterInfo, CharacterInfo targetInfo, Random rand);
+    public abstract bool OnCastBegin(CharacterInfo caster);
+    public abstract SkillResult OnCast(CharacterInfo caster, CharacterInfo target, Random rand);
 }
