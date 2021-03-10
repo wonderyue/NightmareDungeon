@@ -5,4 +5,4 @@ An unfinished game jam work.
 
 https://wenduoyue.itch.io/nightmare-dungeon
 
-<img src="screenshot.png" alt="screenshot" style="zoom:50%;" />
+<img src="screenshot.png" alt="screenshot" style="zoom:20%;" />
